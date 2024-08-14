@@ -6,7 +6,8 @@ class Api::V1::Transactions::Create < Api::V1::BaseService
     user = find_user(params[:user_id])
     return build_not_found_response unless user
 
-    btc_price = fetch_btc_price
+    btc_price = Api::V1::Transactions::CurrentPrice.call[:response][:data]
+    puts "esto trae #{btc_price}"
     return build_error_response('Error al obtener el precio del Bitcoin') unless btc_price
 
     can_transact, message = can_execute_transaction?(user, params[:amount_sent], btc_price, params[:transaction_type])
@@ -32,16 +33,6 @@ class Api::V1::Transactions::Create < Api::V1::BaseService
 
   def self.find_user(user_id)
     User.find_by(id: user_id)
-  end
-
-  def self.fetch_btc_price
-    url = URI('https://api.coindesk.com/v1/bpi/currentprice.json')
-    response = Net::HTTP.get(url)
-    data = JSON.parse(response)
-    data['bpi']['USD']['rate_float']
-  rescue StandardError => e
-    puts "Error fetching Bitcoin price: #{e.message}"
-    nil
   end
 
   def self.can_execute_transaction?(user, amount_sent, btc_price, type)

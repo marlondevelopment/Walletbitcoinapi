@@ -6,7 +6,7 @@ class Api::V1::Transactions::Detail < Api::V1::BaseService
     transaction = find_transaction(params[:id])
     return build_not_found_response('Transacción no encontrada') unless transaction
 
-    response = build_success('Detalle de usuario', Api::V1::Transactions::Presenter.detail(transaction))
+    response = build_success('Detalle de transacción', Api::V1::Transactions::Presenter.detail(transaction))
     { response:, status: response[:status] }
   end
 

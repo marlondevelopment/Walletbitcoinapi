@@ -14,6 +14,11 @@ class Api::V1::TransactionsController < ApplicationController
     render json: response[:response], status: response[:status]
   end
 
+  def current_price_btc
+    response = Api::V1::Transactions::CurrentPrice.call
+    render json: response[:response], status: response[:status]
+  end
+
   private
 
   def transaction_params
