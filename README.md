@@ -455,6 +455,6 @@ Este endpoint permite a un usuario realizar una transacción de compra o venta d
     "success": false,
     "message": "Saldo insuficiente",
     "data": null,
-    "status": 40`
+    "status": 40
   }
   ```
