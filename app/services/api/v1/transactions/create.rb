@@ -7,7 +7,6 @@ class Api::V1::Transactions::Create < Api::V1::BaseService
     return build_not_found_response unless user
 
     btc_price = Api::V1::Transactions::CurrentPrice.call[:response][:data]
-    puts "esto trae #{btc_price}"
     return build_error_response('Error al obtener el precio del Bitcoin') unless btc_price
 
     can_transact, message = can_execute_transaction?(user, params[:amount_sent], btc_price, params[:transaction_type])

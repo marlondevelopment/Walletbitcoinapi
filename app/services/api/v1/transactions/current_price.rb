@@ -13,7 +13,6 @@ class Api::V1::Transactions::CurrentPrice < Api::V1::BaseService
     response = build_success('Precio actual del Bitcoin obtenido con éxito.', data['bpi']['USD']['rate_float'])
     { response:, status: response[:status] }
   rescue StandardError => e
-    puts "Error fetching Bitcoin price: #{e.message}"
     build_error(e.messages)
     { response:, status: response[:status] }
   end
