@@ -49,13 +49,27 @@ class Api::V1::Transactions::Create < Api::V1::BaseService
 
   def self.create_transaction(user, params, btc_price)
     user.transactions.create(
-      amount_sent: params[:amount_sent],
-      amount_received: calculate_amount_received(params[:amount_sent], btc_price, params[:transaction_type]),
+      amount_sent: format_currency(params[:amount_sent], params[:currency_sent]),
+      amount_received: format_currency(
+        calculate_amount_received(params[:amount_sent], btc_price,
+                                  params[:transaction_type]), params[:currency_received]
+      ),
       currency_sent: params[:currency_sent],
       currency_received: params[:currency_received],
       btc_price_at_transaction: btc_price,
       transaction_type: params[:transaction_type]
     )
+  end
+
+  def self.format_currency(amount, currency)
+    case currency
+    when 'USD'
+      format('%.2f', amount).reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+    when 'BTC'
+      format('%.8f', amount).reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+    else
+      amount
+    end
   end
 
   def self.calculate_amount_received(amount_sent, btc_price, type)
